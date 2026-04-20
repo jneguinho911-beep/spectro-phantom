@@ -1,862 +1,699 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>Phantom · Console Portátil</title>
-  <!-- Fonts & Icons (CORRIGIDO - Versão oficial sem conflitos) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <!-- FONT AWESOME CORRETO (substitui o kit problemático) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <style>
-    /* ===== RESET & VARIÁVEIS ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg-dark: #0c0c0e;
-      --bg-card: #15171a;
-      --bg-elevated: #1e2025;
-      --primary: #2d7aff;
-      --primary-glow: #3f8cff;
-      --accent: #b180ff;
-      --text-main: #ffffff;
-      --text-muted: #a0a5b0;
-      --border-subtle: rgba(255, 255, 255, 0.06);
-      --shadow-glow: 0 10px 30px -10px rgba(45, 122, 255, 0.25);
-      --transition: all 0.25s ease;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ===== UTILITÁRIOS ===== */
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 32px;
-    }
-
-    section {
-      padding: 80px 0;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    section:last-of-type {
-      border-bottom: none;
-    }
-
-    h2 {
-      font-size: 2.5rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 48px;
-      position: relative;
-      display: inline-block;
-    }
-
-    h2:after {
-      content: '';
-      position: absolute;
-      bottom: -12px;
-      left: 0;
-      width: 60px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      border-radius: 4px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      padding: 14px 32px;
-      border-radius: 60px;
-      text-decoration: none;
-      transition: var(--transition);
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      box-shadow: 0 6px 16px rgba(45, 122, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .btn i {
-      font-size: 1.1rem;
-    }
-
-    .btn:hover {
-      background: var(--primary-glow);
-      transform: translateY(-3px);
-      box-shadow: 0 14px 28px rgba(45, 122, 255, 0.4);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--primary);
-      box-shadow: none;
-      color: white;
-    }
-
-    .btn-outline:hover {
-      background: rgba(45, 122, 255, 0.1);
-      border-color: var(--primary-glow);
-      transform: translateY(-2px);
-    }
-
-    /* ===== NAVEGAÇÃO ===== */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 16px 32px;
-      background: rgba(12, 12, 14, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 1000;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-      transition: var(--transition);
-    }
-
-    .nav-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #fff 0%, #b0c8ff 80%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 20px rgba(45, 122, 255, 0.5);
-    }
-
-    .nav-menu {
-      display: flex;
-      gap: 40px;
-      list-style: none;
-    }
-
-    .nav-menu li a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-      font-size: 1rem;
-    }
-
-    .nav-menu li a:hover,
-    .nav-menu li a.active {
-      color: white;
-    }
-
-    .menu-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.8rem;
-      cursor: pointer;
-    }
-
-    /* ===== HERO ===== */
-    .hero {
-      padding: 160px 0 100px;
-      border-bottom: none;
-    }
-
-    .hero-grid {
-      display: flex;
-      align-items: center;
-      gap: 60px;
-    }
-
-    .hero-content {
-      flex: 1;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      background: rgba(45, 122, 255, 0.15);
-      color: var(--primary);
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-      border: 1px solid rgba(45, 122, 255, 0.3);
-    }
-
-    .hero-content h1 {
-      font-size: 4rem;
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      margin-bottom: 24px;
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, #ffffff, #b0c8ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero-desc {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      margin-bottom: 36px;
-      max-width: 500px;
-    }
-
-    .price-tag {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-
-    .price {
-      font-size: 2.8rem;
-      font-weight: 700;
-    }
-
-    .price-small {
-      color: var(--text-muted);
-      font-size: 1rem;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .hero-image {
-      flex: 1;
-      text-align: center;
-      position: relative;
-      min-height: 400px; /* GARANTE ALTURA MÍNIMA PARA O MODELO */
-    }
-
-    #modelViewerContainer {
-      width: 100%;
-      height: 100%;
-      min-height: 400px;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
-      100% { transform: translateY(0px); }
-    }
-
-    /* ===== CARACTERÍSTICAS ===== */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      margin-top: 20px;
-    }
-
-    .feature-card {
-      background: var(--bg-card);
-      padding: 32px 24px;
-      border-radius: 28px;
-      border: 1px solid var(--border-subtle);
-      transition: var(--transition);
-      backdrop-filter: blur(4px);
-    }
-
-    .feature-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(45, 122, 255, 0.4);
-      box-shadow: var(--shadow-glow);
-    }
-
-    .feature-icon {
-      font-size: 2.4rem;
-      color: var(--primary);
-      margin-bottom: 24px;
-    }
-
-    .feature-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 12px;
-    }
-
-    .feature-card p {
-      color: var(--text-muted);
-    }
-
-    /* ===== MODELOS (cards) ===== */
-    .models-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 30px;
-      justify-content: center;
-    }
-
-    .model-card {
-      background: var(--bg-elevated);
-      border-radius: 32px;
-      overflow: hidden;
-      border: 1px solid var(--border-subtle);
-      transition: all 0.3s;
-    }
-
-    .model-card:hover {
-      border-color: var(--primary);
-      box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.8);
-    }
-
-    .model-badge {
-      position: absolute;
-      background: var(--primary);
-      padding: 4px 16px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin: 20px;
-    }
-
-    .model-img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      background: #0b0d10;
-    }
-
-    .model-content {
-      padding: 28px 24px 32px;
-    }
-
-    .model-name {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .model-price {
-      font-size: 2rem;
-      font-weight: 700;
-      color: white;
-      margin: 16px 0 8px;
-    }
-
-    .model-price small {
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--text-muted);
-    }
-
-    .availability {
-      display: inline-block;
-      background: #1f3a2b;
-      color: #8ce99a;
-      padding: 4px 14px;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 20px;
-    }
-
-    .unavailable {
-      background: #1f3a2b;
-      color: #8ce99a;
-    }
-
-    .model-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .btn-small {
-      padding: 10px 18px;
-      font-size: 0.9rem;
-    }
-
-    /* ===== GALERIA ===== */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-
-    .gallery-item {
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .gallery-item img {
-      width: 100%;
-      height: 280px;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.5s;
-    }
-
-    .gallery-item:hover img {
-      transform: scale(1.03);
-    }
-
-    /* ===== ESPECIFICAÇÕES ===== */
-    .specs-wrapper {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 40px;
-      background: var(--bg-card);
-      padding: 48px;
-      border-radius: 40px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .specs-list {
-      list-style: none;
-    }
-
-    .specs-list li {
-      display: flex;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .spec-label {
-      width: 140px;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    .spec-value {
-      font-weight: 600;
-    }
-
-    /* ===== CTA / WHATSAPP ===== */
-    .cta-section {
-      text-align: center;
-      background: linear-gradient(145deg, #101216, #0a0c10);
-      border-radius: 48px;
-      padding: 60px 40px;
-      border: 1px solid rgba(45,122,255,0.15);
-    }
-
-    .cta-title {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-    }
-
-    .whatsapp-btn {
-      background: #25D366;
-      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
-      margin-top: 24px;
-    }
-    .whatsapp-btn:hover {
-      background: #20b859;
-    }
-
-    /* ===== FOOTER ===== */
-    footer {
-      padding: 40px 0;
-      color: var(--text-muted);
-    }
-
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .social-icons a {
-      color: var(--text-muted);
-      margin-left: 24px;
-      font-size: 1.4rem;
-      transition: color 0.2s;
-    }
-    .social-icons a:hover {
-      color: var(--primary);
-    }
-
-    /* ===== MODAL ===== */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(6px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      padding: 20px;
-    }
-
-    .modal-card {
-      background: var(--bg-elevated);
-      max-width: 480px;
-      width: 100%;
-      border-radius: 32px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 30px 50px rgba(0,0,0,0.7);
-      animation: modalFadeIn 0.25s ease;
-    }
-
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 24px 28px 8px;
-    }
-
-    .modal-header h3 {
-      font-size: 1.6rem;
-      font-weight: 600;
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 2rem;
-      cursor: pointer;
-      transition: color 0.2s;
-      line-height: 1;
-    }
-    .modal-close:hover { color: white; }
-
-    .modal-body {
-      padding: 8px 28px 32px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #e0e0e0;
-    }
-    .form-group label span { color: var(--primary); }
-
-    .form-group input,
-    .form-group textarea,
-    .readonly-input {
-      width: 100%;
-      padding: 14px 16px;
-      background: #0f1115;
-      border: 1.5px solid #2a2e36;
-      border-radius: 18px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      transition: border 0.2s;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .readonly-input {
-      background: #181b22;
-      color: #b0b8ff;
-      font-weight: 500;
-      cursor: default;
-    }
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 28px;
-    }
-    .modal-actions .btn {
-      flex: 1;
-    }
-
-    /* ===== RESPONSIVO ===== */
-    @media (max-width: 900px) {
-      .container { padding: 0 24px; }
-      h2 { font-size: 2rem; }
-      .hero-grid { flex-direction: column; text-align: center; }
-      .hero-content h1 { font-size: 3rem; }
-      .hero-actions { justify-content: center; }
-      .features-grid { grid-template-columns: 1fr; }
-      .models-grid { grid-template-columns: 1fr; }
-      .gallery-grid { grid-template-columns: 1fr; }
-      .specs-wrapper { grid-template-columns: 1fr; padding: 32px; }
-      .nav-menu {
-        position: fixed;
-        left: 0; right: 0; top: 70px;
-        background: rgba(8,8,10,0.98);
-        backdrop-filter: blur(12px);
-        flex-direction: column;
-        align-items: center;
-        padding: 32px;
-        gap: 28px;
-        transform: translateY(-150%);
-        transition: transform 0.3s ease;
-        border-bottom: 1px solid #222;
-      }
-      .nav-menu.active { transform: translateY(0); }
-      .menu-toggle { display: block; }
-      .navbar { padding: 12px 24px; }
-      section { padding: 60px 0; }
-    }
-
-    @media (max-width: 480px) {
-      .hero-content h1 { font-size: 2.5rem; }
-      .price { font-size: 2.2rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phantom · Console Portátil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+--bg-dark:#0c0c0e;
+--bg-card:#15171a;
+--bg-elevated:#1e2025;
+--primary:#2d7aff;
+--accent:#b180ff;
+--text-main:#ffffff;
+--text-muted:#a0a5b0;
+--border-subtle:rgba(255,255,255,0.06);
+--pixel-green:#00ff41;
+--pixel-cyan:#00ffff;
+--pixel-yellow:#ffff00;
+}
+body{
+font-family:'Press Start 2P',monospace;
+background-color:var(--bg-dark);
+color:var(--text-main);
+line-height:1.8;
+image-rendering:pixelated;
+}
+/* PIXEL GRID BACKGROUND */
+body::before{
+content:'';
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background-image:
+linear-gradient(rgba(45,122,255,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(45,122,255,0.03) 1px, transparent 1px);
+background-size:8px 8px;
+pointer-events:none;
+z-index:0;
+}
+.container{max-width:1280px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+section{padding:80px 0;border-bottom:2px solid rgba(45,122,255,0.2);position:relative;}
+section::before{
+content:'';
+position:absolute;
+left:0;right:0;bottom:-2px;height:2px;
+background:repeating-linear-gradient(90deg,var(--primary) 0,var(--primary) 4px,transparent 4px,transparent 8px);
+}
+/* PIXEL HEADING */
+h2{
+font-family:'Press Start 2P',monospace;
+font-size:1.4rem;
+font-weight:400;
+letter-spacing:0.05em;
+margin-bottom:48px;
+position:relative;
+display:inline-block;
+color:var(--pixel-cyan);
+text-shadow:3px 3px 0 #005f5f,6px 6px 0 rgba(0,255,255,0.2);
+}
+h2:after{
+content:'';
+position:absolute;
+bottom:-16px;
+left:0;
+width:100%;
+height:4px;
+background:repeating-linear-gradient(90deg,var(--primary) 0,var(--primary) 8px,var(--accent) 8px,var(--accent) 16px);
+}
+/* PIXEL BUTTON */
+.btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+background:var(--primary);
+color:white;
+font-family:'Press Start 2P',monospace;
+font-size:0.65rem;
+font-weight:400;
+padding:14px 24px;
+text-decoration:none;
+border:none;
+cursor:pointer;
+position:relative;
+clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));
+transition:all 0.1s;
+box-shadow:4px 4px 0 #1a4ecc,8px 8px 0 rgba(45,122,255,0.2);
+}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #1a4ecc,10px 10px 0 rgba(45,122,255,0.2);}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #1a4ecc;}
+.btn-outline{
+background:transparent;
+border:3px solid var(--primary);
+box-shadow:4px 4px 0 rgba(45,122,255,0.4);
+color:var(--primary);
+clip-path:none;
+}
+.btn-outline:hover{background:rgba(45,122,255,0.15);box-shadow:6px 6px 0 rgba(45,122,255,0.4);}
+/* NAVBAR */
+.navbar{
+position:fixed;
+top:0;left:0;width:100%;
+padding:0 32px;
+background:#0c0c0e;
+z-index:1000;
+border-bottom:4px solid var(--primary);
+box-shadow:0 4px 0 #1a4ecc;
+}
+.nav-container{
+max-width:1280px;
+margin:0 auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+height:64px;
+}
+.logo{
+font-family:'Press Start 2P',monospace;
+font-size:1.4rem;
+color:var(--pixel-cyan);
+text-shadow:3px 3px 0 #005f5f,0 0 20px rgba(0,255,255,0.5);
+letter-spacing:0.1em;
+}
+.nav-menu{display:flex;gap:32px;list-style:none;}
+.nav-menu li a{
+color:var(--text-muted);
+text-decoration:none;
+font-family:'Press Start 2P',monospace;
+font-size:0.6rem;
+transition:color 0.1s;
+letter-spacing:0.05em;
+padding:4px 0;
+border-bottom:2px solid transparent;
+}
+.nav-menu li a:hover,.nav-menu li a.active{
+color:var(--pixel-green);
+border-bottom-color:var(--pixel-green);
+text-shadow:0 0 8px rgba(0,255,65,0.6);
+}
+.menu-toggle{display:none;background:none;border:none;color:white;font-size:1.8rem;cursor:pointer;}
+
+/* HERO */
+.hero{padding:140px 0 100px;border-bottom:none;}
+.hero-grid{display:flex;align-items:center;gap:60px;}
+.hero-content{flex:1;}
+.hero-badge{
+display:inline-block;
+background:rgba(0,255,65,0.1);
+color:var(--pixel-green);
+font-family:'Press Start 2P',monospace;
+font-size:0.55rem;
+padding:8px 16px;
+margin-bottom:28px;
+border:2px solid var(--pixel-green);
+box-shadow:3px 3px 0 rgba(0,255,65,0.3);
+}
+.hero-content h1{
+font-family:'Press Start 2P',monospace;
+font-size:2rem;
+font-weight:400;
+line-height:1.6;
+letter-spacing:0.02em;
+margin-bottom:28px;
+}
+.gradient-text{
+color:var(--pixel-cyan);
+text-shadow:3px 3px 0 #005f5f;
+}
+.hero-desc{
+font-family:'Press Start 2P',monospace;
+font-size:0.6rem;
+color:var(--text-muted);
+margin-bottom:36px;
+max-width:500px;
+line-height:2;
+}
+.price-tag{display:flex;align-items:baseline;gap:12px;margin-bottom:32px;}
+.price{
+font-family:'Press Start 2P',monospace;
+font-size:1.2rem;
+color:var(--pixel-yellow);
+text-shadow:2px 2px 0 #888800;
+}
+.price-small{color:var(--text-muted);font-size:0.5rem;}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;}
+.hero-image{flex:1;text-align:center;position:relative;min-height:400px;}
+#modelViewerContainer{width:100%;height:100%;min-height:400px;}
+
+/* PIXEL SCANLINE on 3D viewer */
+.pixel-frame{
+position:relative;
+border:4px solid var(--primary);
+box-shadow:6px 6px 0 #1a4ecc,12px 12px 0 rgba(45,122,255,0.15);
+}
+.pixel-frame::after{
+content:'';
+position:absolute;
+top:0;left:0;right:0;bottom:0;
+background:repeating-linear-gradient(0deg,rgba(0,0,0,0.08) 0px,rgba(0,0,0,0.08) 2px,transparent 2px,transparent 4px);
+pointer-events:none;
+z-index:10;
+}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:20px;}
+.feature-card{
+background:var(--bg-card);
+padding:28px 20px;
+border:3px solid rgba(45,122,255,0.3);
+box-shadow:4px 4px 0 rgba(45,122,255,0.2);
+transition:all 0.1s;
+position:relative;
+}
+.feature-card::before{
+content:'';
+position:absolute;
+top:4px;left:4px;right:-4px;bottom:-4px;
+background:rgba(45,122,255,0.05);
+z-index:-1;
+}
+.feature-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(45,122,255,0.3);}
+.feature-icon{font-size:2rem;color:var(--pixel-green);margin-bottom:20px;text-shadow:0 0 10px rgba(0,255,65,0.5);}
+.feature-card h3{
+font-family:'Press Start 2P',monospace;
+font-size:0.8rem;
+margin-bottom:12px;
+color:var(--pixel-cyan);
+line-height:1.6;
+}
+.feature-card p{color:var(--text-muted);font-size:0.6rem;line-height:2;}
+
+/* MODELS */
+.models-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;justify-content:center;}
+.model-card{
+background:var(--bg-elevated);
+border:3px solid rgba(45,122,255,0.3);
+box-shadow:4px 4px 0 rgba(45,122,255,0.15);
+transition:all 0.15s;
+position:relative;
+}
+.model-card:hover{border-color:var(--primary);box-shadow:6px 6px 0 rgba(45,122,255,0.3);transform:translate(-2px,-2px);}
+.model-badge{
+position:absolute;
+background:var(--primary);
+padding:6px 14px;
+font-family:'Press Start 2P',monospace;
+font-size:0.5rem;
+margin:16px;
+box-shadow:2px 2px 0 #1a4ecc;
+}
+.model-img{width:100%;height:200px;object-fit:cover;background:#0b0d10;display:block;image-rendering:auto;}
+.model-content{padding:24px 20px 28px;}
+.model-name{
+font-family:'Press Start 2P',monospace;
+font-size:1rem;
+margin-bottom:8px;
+color:var(--pixel-cyan);
+text-shadow:2px 2px 0 #005f5f;
+}
+.model-price{
+font-family:'Press Start 2P',monospace;
+font-size:0.9rem;
+color:var(--pixel-yellow);
+margin:12px 0 8px;
+text-shadow:2px 2px 0 #888800;
+}
+.model-price small{font-size:0.5rem;color:var(--text-muted);}
+.availability{
+display:inline-block;
+background:rgba(0,255,65,0.1);
+color:var(--pixel-green);
+padding:4px 12px;
+font-family:'Press Start 2P',monospace;
+font-size:0.45rem;
+margin-bottom:16px;
+border:2px solid rgba(0,255,65,0.4);
+}
+.unavailable{background:rgba(255,165,0,0.1);color:#ffa500;border-color:rgba(255,165,0,0.4);}
+.model-actions{display:flex;gap:12px;margin-top:8px;}
+.btn-small{padding:8px 14px;font-size:0.55rem;}
+
+/* GALLERY */
+.gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.gallery-item{
+border:3px solid rgba(45,122,255,0.3);
+box-shadow:4px 4px 0 rgba(45,122,255,0.15);
+overflow:hidden;
+position:relative;
+}
+.gallery-item::after{
+content:'';
+position:absolute;
+top:0;left:0;right:0;bottom:0;
+background:repeating-linear-gradient(0deg,rgba(0,0,0,0.05) 0px,rgba(0,0,0,0.05) 2px,transparent 2px,transparent 4px);
+pointer-events:none;
+}
+.gallery-item img{width:100%;height:280px;object-fit:cover;display:block;image-rendering:auto;}
+.gallery-item:hover{border-color:var(--pixel-cyan);box-shadow:6px 6px 0 rgba(0,255,255,0.2);}
+
+/* SPECS */
+.specs-wrapper{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:32px;
+background:var(--bg-card);
+padding:40px;
+border:3px solid rgba(45,122,255,0.3);
+box-shadow:6px 6px 0 rgba(45,122,255,0.15);
+}
+.specs-list{list-style:none;}
+.specs-list li{
+display:flex;
+padding:14px 0;
+border-bottom:2px solid rgba(255,255,255,0.04);
+border-bottom-style:dashed;
+}
+.spec-label{width:160px;font-size:0.5rem;color:var(--text-muted);}
+.spec-value{font-size:0.55rem;color:var(--pixel-cyan);}
+
+/* CTA */
+.cta-section{
+text-align:center;
+background:#0a0c10;
+padding:60px 40px;
+border:3px solid rgba(45,122,255,0.3);
+box-shadow:6px 6px 0 rgba(45,122,255,0.2);
+position:relative;
+}
+.cta-section::before{
+content:'> PHANTOM <';
+position:absolute;
+top:-14px;
+left:50%;
+transform:translateX(-50%);
+background:#0a0c10;
+color:var(--pixel-cyan);
+font-family:'Press Start 2P',monospace;
+font-size:0.55rem;
+padding:4px 16px;
+border:2px solid rgba(0,255,255,0.4);
+}
+.cta-title{
+font-family:'Press Start 2P',monospace;
+font-size:1.2rem;
+margin-bottom:20px;
+line-height:1.8;
+color:var(--pixel-yellow);
+text-shadow:3px 3px 0 #888800;
+}
+.whatsapp-btn{
+background:#25D366;
+box-shadow:4px 4px 0 #1a9a49;
+margin-top:24px;
+}
+.whatsapp-btn:hover{background:#20b859;box-shadow:6px 6px 0 #1a9a49;}
+.cta-text{font-size:0.6rem;line-height:2;color:#ccc;margin-bottom:16px;}
+.cta-time{font-size:0.45rem;margin-top:20px;color:var(--text-muted);}
+
+/* FOOTER */
+footer{padding:40px 0;color:var(--text-muted);border-top:4px solid var(--primary);}
+.footer-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.footer-brand{font-family:'Press Start 2P',monospace;font-weight:400;color:var(--pixel-cyan);font-size:0.8rem;}
+.footer-copy{font-size:0.45rem;margin-top:8px;color:var(--text-muted);}
+.social-icons a{color:var(--text-muted);margin-left:20px;font-size:1.2rem;transition:color 0.2s;}
+.social-icons a:hover{color:var(--pixel-green);text-shadow:0 0 8px rgba(0,255,65,0.6);}
+
+/* PIXEL CORNER DECORATIONS */
+.pixel-corner{position:relative;}
+.pixel-corner::before,.pixel-corner::after{
+content:'';
+position:absolute;
+width:8px;height:8px;
+background:var(--primary);
+}
+.pixel-corner::before{top:-3px;left:-3px;}
+.pixel-corner::after{bottom:-3px;right:-3px;}
+
+/* BLINKING CURSOR */
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.cursor{display:inline-block;width:12px;height:20px;background:var(--pixel-cyan);animation:blink 1s infinite;vertical-align:middle;margin-left:4px;}
+
+/* PIXEL SCROLLBAR */
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:#0c0c0e;}
+::-webkit-scrollbar-thumb{background:var(--primary);box-shadow:inset 0 0 0 2px #0c0c0e;}
+
+/* MODAL */
+.modal-overlay{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.9);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:2000;
+padding:20px;
+}
+.modal-card{
+background:var(--bg-elevated);
+max-width:480px;
+width:100%;
+border:3px solid var(--primary);
+box-shadow:8px 8px 0 #1a4ecc,16px 16px 0 rgba(45,122,255,0.15);
+}
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 24px 12px;
+border-bottom:2px solid rgba(45,122,255,0.2);
+background:rgba(45,122,255,0.05);
+}
+.modal-header h3{font-family:'Press Start 2P',monospace;font-size:0.8rem;color:var(--pixel-cyan);}
+.modal-close{background:none;border:none;color:var(--text-muted);font-size:1.8rem;cursor:pointer;}
+.modal-close:hover{color:var(--pixel-green);}
+.modal-body{padding:16px 24px 28px;}
+.form-group{margin-bottom:16px;}
+.form-group label{
+display:block;
+margin-bottom:8px;
+font-family:'Press Start 2P',monospace;
+font-size:0.5rem;
+color:#e0e0e0;
+}
+.form-group label span{color:var(--primary);}
+.form-group input,.form-group textarea,.readonly-input{
+width:100%;
+padding:12px 14px;
+background:#0f1115;
+border:2px solid #2a2e36;
+color:white;
+font-family:'Press Start 2P',monospace;
+font-size:0.55rem;
+transition:border 0.2s;
+}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:2px 2px 0 var(--primary);}
+.readonly-input{background:#181b22;color:#b0b8ff;cursor:default;}
+.modal-actions{display:flex;gap:12px;margin-top:20px;}
+.modal-actions .btn{flex:1;}
+
+/* SECTION LABEL */
+.section-label{
+font-family:'Press Start 2P',monospace;
+font-size:0.45rem;
+color:var(--primary);
+letter-spacing:0.2em;
+margin-bottom:8px;
+display:block;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+.container{padding:0 20px;}
+h2{font-size:1rem;}
+.hero-grid{flex-direction:column;text-align:center;}
+.hero-content h1{font-size:1.3rem;}
+.hero-actions{justify-content:center;}
+.features-grid{grid-template-columns:1fr;}
+.models-grid{grid-template-columns:1fr;}
+.gallery-grid{grid-template-columns:1fr;}
+.specs-wrapper{grid-template-columns:1fr;padding:24px;}
+.nav-menu{
+position:fixed;
+left:0;right:0;top:64px;
+background:#0c0c0e;
+flex-direction:column;
+align-items:center;
+padding:28px;
+gap:24px;
+transform:translateY(-150%);
+transition:transform 0.3s ease;
+border-bottom:3px solid var(--primary);
+}
+.nav-menu.active{transform:translateY(0);}
+.menu-toggle{display:block;}
+.navbar{padding:0 20px;}
+}
+@media(max-width:480px){
+.hero-content h1{font-size:1rem;}
+.price{font-size:0.9rem;}
+.cta-title{font-size:0.9rem;}
+}
+</style>
 </head>
 <body>
 
-<!-- NAVEGAÇÃO FIXA -->
 <nav class="navbar">
   <div class="nav-container">
-    <div class="logo">PHANTOM</div>
-    <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
-      <i class="fas fa-bars"></i>
-    </button>
+    <div class="logo">PHANTOM<span class="cursor"></span></div>
+    <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
     <ul class="nav-menu" id="nav-menu">
-      <li><a href="#home" class="active">Início</a></li>
-      <li><a href="#modelos">Modelos</a></li>
-      <li><a href="#galeria">Galeria</a></li>
-      <li><a href="#especificacoes">Especificações</a></li>
-      <li><a href="#contato">Contato</a></li>
+      <li><a href="#home" class="active">// INÍCIO</a></li>
+      <li><a href="#modelos">// MODELOS</a></li>
+      <li><a href="#galeria">// GALERIA</a></li>
+      <li><a href="#especificacoes">// SPECS</a></li>
+      <li><a href="#contato">// CONTATO</a></li>
     </ul>
   </div>
 </nav>
 
 <main>
-  <!-- HERO SECTION -->
-  <section id="home" class="hero">
-    <div class="container hero-grid">
-      <div class="hero-content">
-        <span class="hero-badge"><i class="fas fa-bolt" style="margin-right: 6px;"></i> Nova geração portátil</span>
-        <h1>
-          <span class="gradient-text">É fantástico.</span><br>
-          É fenomenal.<br>
-          É PHANTOM.
-        </h1>
-        <p class="hero-desc">
-          Console portátil retrô com tecnologia atual, tela LCD de 5" e até 6h de bateria.
-        </p>
-        <div class="price-tag">
-          <span class="price">R$ 350,00 à vista</span>
-          <span class="price-small">ou no PIX</span>
-        </div>
-        <div class="hero-actions">
-          <a href="#modelos" class="btn"><i class="fas fa-shopping-cart"></i> Comprar agora</a>
-          <a href="#galeria" class="btn btn-outline"><i class="fas fa-images"></i> Ver galeria</a>
-        </div>
+<section id="home" class="hero">
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <span class="hero-badge">&gt; NOVA GERAÇÃO PORTÁTIL_</span>
+      <h1>
+        <span class="gradient-text">É FANTÁSTICO.</span><br>
+        É FENOMENAL.<br>
+        É PHANTOM.
+      </h1>
+      <p class="hero-desc">
+        Console portátil retrô com tecnologia atual, tela LCD de 5" e até 6h de bateria.
+      </p>
+      <div class="price-tag">
+        <span class="price">R$ 350,00</span>
+        <span class="price-small">no PIX / à vista</span>
       </div>
-      <div class="hero-image">
-        <!-- Contêiner do Modelo 3D -->
+      <div class="hero-actions">
+        <a href="#modelos" class="btn"><i class="fas fa-shopping-cart"></i>&nbsp; COMPRAR</a>
+        <a href="#galeria" class="btn btn-outline"><i class="fas fa-images"></i>&nbsp; GALERIA</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="pixel-frame" style="border-radius:0;">
         <div id="modelViewerContainer"></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CARACTERÍSTICAS -->
-  <section>
-    <div class="container">
-      <h2>Poder na palma da mão</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fas fa-microchip"></i></div>
-          <h3>Processador e GPU</h3>
-          <p>Processador BCM2837 com GPU Videocore IV 3D.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fas fa-tv"></i></div>
-          <h3>Tela LCD 5"</h3>
-          <p>Tela LCD de 5” com cores vibrantes, alto brilho e resposta ágil, perfeita para extrair o máximo do nosso Processador BCM2837.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><i class="fas fa-battery-full"></i></div>
-          <h3>Até 6h de jogo</h3>
-          <p>Energia otimizada com recarga prática via USB-C..</p>
-        </div>
+<section>
+  <div class="container">
+    <span class="section-label">// CARACTERÍSTICAS</span>
+    <h2>PODER NA PALMA DA MÃO</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-microchip"></i></div>
+        <h3>PROCESSADOR + GPU</h3>
+        <p>BCM2837 com GPU Videocore IV 3D de alta performance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-tv"></i></div>
+        <h3>TELA LCD 5"</h3>
+        <p>Cores vibrantes, alto brilho e resposta ágil para o máximo do Processador BCM2837.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-battery-full"></i></div>
+        <h3>ATÉ 6H DE JOGO</h3>
+        <p>Energia otimizada com recarga prática via USB-C.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- MODELOS & PREÇOS -->
-  <section id="modelos">
-    <div class="container">
-      <h2>Escolha seu Phantom</h2>
-      <div class="models-grid">
-        <!-- Modelo Phantom Lite -->
-        <div class="model-card">
-          <div style="position: relative;">
-            <img class="model-img" src="WhatsApp Image 2026-04-20 at 19.44.38.jpeg" alt="Phantom Lite">
-          </div>
-          <div class="model-content">
-            <h3 class="model-name">Phantom Lite</h3>
-            <div class="model-price">R$ 350,00 <small>no PIX</small></div>
-            <span class="availability"><i class="fas fa-circle" style="font-size: 0.6rem; margin-right: 6px;"></i> Disponível</span>
-            <p style="color: #a0a5b0; margin-bottom: 20px;">32GB · LCD 7" HDMI · Edição padrão</p>
-            <div class="model-actions">
-              <a href="#" class="btn btn-small btn-comprar"><i class="fas fa-bag-shopping"></i> Comprar</a>
-              <a href="#" class="btn btn-outline btn-small">Detalhes</a>
-            </div>
-          </div>
+<section id="modelos">
+  <div class="container">
+    <span class="section-label">// MODELOS & PREÇOS</span>
+    <h2>ESCOLHA SEU PHANTOM</h2>
+    <div class="models-grid">
+      <div class="model-card">
+        <div style="position:relative;">
+          <img class="model-img" src="WhatsApp Image 2026-04-20 at 19.44.38.jpeg" alt="Phantom Lite">
         </div>
-        <!-- Modelo Phantom Silver -->
-        <div class="model-card">
-          <div style="position: relative;">
-            <img class="model-img" src="WhatsApp Image 2026-04-20 at 19.44.49.jpeg" alt="Phantom Silver">
-          </div>
-          <div class="model-content">
-            <h3 class="model-name">Phantom Silver</h3>
-            <div class="model-price">R$ 450,00<small>no PIX</small></div>
-            <span class="availability unavailable"><i class="fas fa-circle" style="font-size: 0.6rem; margin-right: 6px;"></i> Indisponível</span>
-            <p style="color: #a0a5b0; margin-bottom: 20px;">64GB · LCD 7" HDMI · Edição Especial</p>
-            <div class="model-actions">
-              <a href="#" class="btn btn-small btn-comprar"><i class="fas fa-bag-shopping"></i> Comprar</a>
-              <a href="#" class="btn btn-outline btn-small">Detalhes</a>
-            </div>
+        <div class="model-content">
+          <h3 class="model-name">PHANTOM LITE</h3>
+          <div class="model-price">R$ 350,00 <small>no PIX</small></div>
+          <span class="availability"><i class="fas fa-circle" style="font-size:0.4rem;margin-right:6px;"></i> &gt; DISPONÍVEL</span>
+          <p style="color:#a0a5b0;margin-bottom:16px;font-size:0.5rem;line-height:2;">32GB · LCD 7" HDMI · Edição padrão</p>
+          <div class="model-actions">
+            <a href="#" class="btn btn-small btn-comprar"><i class="fas fa-bag-shopping"></i>&nbsp; COMPRAR</a>
+            <a href="#" class="btn btn-outline btn-small">INFO</a>
           </div>
         </div>
       </div>
+      <div class="model-card">
+        <div style="position:relative;">
+          <img class="model-img" src="WhatsApp Image 2026-04-20 at 19.44.49.jpeg" alt="Phantom Silver">
+        </div>
+        <div class="model-content">
+          <h3 class="model-name">PHANTOM SILVER</h3>
+          <div class="model-price">R$ 450,00 <small>no PIX</small></div>
+          <span class="availability unavailable"><i class="fas fa-circle" style="font-size:0.4rem;margin-right:6px;"></i> &gt; INDISPONÍVEL</span>
+          <p style="color:#a0a5b0;margin-bottom:16px;font-size:0.5rem;line-height:2;">64GB · LCD 7" HDMI · Edição Especial</p>
+          <div class="model-actions">
+            <a href="#" class="btn btn-small btn-comprar"><i class="fas fa-bag-shopping"></i>&nbsp; COMPRAR</a>
+            <a href="#" class="btn btn-outline btn-small">INFO</a>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- GALERIA -->
 <section id="galeria">
   <div class="container">
-    <h2>Design Destaque</h2>
+    <span class="section-label">// DESIGN</span>
+    <h2>DESIGN DESTAQUE</h2>
     <div class="gallery-grid">
-      <!-- Substituindo a primeira imagem por um modelo 3D -->
-      <div class="gallery-item" style="background: #0b0d10;">
-        <model-viewer 
-          id="gallery-model-viewer"
+      <div class="gallery-item">
+        <model-viewer
+          id="gallery-model-viewer-1"
           src="base.glb"
           alt="Modelo 3D do Console Phantom"
-          auto-rotate
-          camera-controls
-          ar
+          auto-rotate camera-controls ar
           shadow-intensity="1"
           camera-orbit="0deg 75deg 2m"
-          style="width: 100%; height: 280px; background: #0b0d10;"
-        ></model-viewer>
+          style="width:100%;height:280px;background:#0b0d10;">
+        </model-viewer>
       </div>
       <div class="gallery-item">
-        <model-viewer 
-          id="gallery-model-viewer"
+        <model-viewer
+          id="gallery-model-viewer-2"
           src="phantom_chrome.glb"
-          alt="Modelo 3D do Console Phantom"
-          auto-rotate
-          camera-controls
-          ar
+          alt="Modelo 3D do Console Phantom Chrome"
+          auto-rotate camera-controls ar
           shadow-intensity="1"
           camera-orbit="0deg 75deg 2m"
-          style="width: 100%; height: 280px; background: #0b0d10;"
-        ></model-viewer>
+          style="width:100%;height:280px;background:#0b0d10;">
+        </model-viewer>
       </div>
     </div>
-    <p style="text-align: center; margin-top: 30px; color: var(--text-muted);">
-      <i class="fas fa-camera"></i> Console desenvolvido para melhor conforto e entretenimento possível.
+    <p style="text-align:center;margin-top:24px;color:var(--text-muted);font-size:0.5rem;line-height:2;">
+      &gt; Console desenvolvido para melhor conforto e entretenimento possível._
     </p>
   </div>
 </section>
 
-  <!-- ESPECIFICAÇÕES TÉCNICAS -->
-  <section id="especificacoes">
-    <div class="container">
-      <h2>Ficha técnica</h2>
-      <div class="specs-wrapper">
-        <ul class="specs-list">
-          <li><span class="spec-label">Processador</span><span class="spec-value">BCM2837</span></li>
-          <li><span class="spec-label">GPU</span><span class="spec-value">Videocore IV 3D</span></li>
-          <li><span class="spec-label">Memória RAM</span><span class="spec-value">16 GB LPDDR2 SDRAM</span></li>
-          <li><span class="spec-label">Armazenamento</span><span class="spec-value">32GB</span></li>
-        </ul>
-        <ul class="specs-list">
-          <li><span class="spec-label">Tela</span><span class="spec-value">Tela LCD 5”</span></li>
-          <li><span class="spec-label">Bateria</span><span class="spec-value">3x18650 5V 2A, até 6h</span></li>
-          <li><span class="spec-label">Conectividade</span><span class="spec-value">Wi-Fi 6E, Bluetooth 5.3, USB-C</span></li>
-          <li><span class="spec-label">Áudio</span><span class="spec-value">Stereo, suporte a áudio de jogos 3D</span></li>
-        </ul>
-      </div>
+<section id="especificacoes">
+  <div class="container">
+    <span class="section-label">// HARDWARE</span>
+    <h2>FICHA TÉCNICA</h2>
+    <div class="specs-wrapper">
+      <ul class="specs-list">
+        <li><span class="spec-label">PROCESSADOR</span><span class="spec-value">BCM2837</span></li>
+        <li><span class="spec-label">GPU</span><span class="spec-value">VIDEOCORE IV 3D</span></li>
+        <li><span class="spec-label">RAM</span><span class="spec-value">16GB LPDDR2</span></li>
+        <li><span class="spec-label">STORAGE</span><span class="spec-value">32GB</span></li>
+      </ul>
+      <ul class="specs-list">
+        <li><span class="spec-label">TELA</span><span class="spec-value">LCD 5"</span></li>
+        <li><span class="spec-label">BATERIA</span><span class="spec-value">3×18650 5V 2A ≈6H</span></li>
+        <li><span class="spec-label">WIRELESS</span><span class="spec-value">WI-FI 6E + BT 5.3</span></li>
+        <li><span class="spec-label">ÁUDIO</span><span class="spec-value">STEREO 3D</span></li>
+      </ul>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CONTATO / WHATSAPP -->
-  <section id="contato">
-    <div class="container">
-      <div class="cta-section">
-        <i class="fas fa-headset" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-        <h3 class="cta-title">Deseja mais informações?</h3>
-        <p style="font-size: 1.2rem; margin-bottom: 16px; color: #ccc;">Fale direto com nossa equipe de vendas OU entre na nossa comunidade para tirar dúvidas.</p>
-        <a href="https://chat.whatsapp.com/D1POPuDCLEm2hJSrP2LtKJ" class="btn whatsapp-btn" target="_blank" rel="noopener">
-          <i class="fab fa-whatsapp"></i> Entrar na comunidade no WhatsApp
-        </a>
-        <p style="margin-top: 24px; font-size: 0.9rem;">Seg a Sex, 8h-18h</p>
-      </div>
+<section id="contato">
+  <div class="container">
+    <div class="cta-section">
+      <i class="fas fa-headset" style="font-size:2.5rem;color:var(--pixel-green);margin-bottom:20px;display:block;text-shadow:0 0 12px rgba(0,255,65,0.5);"></i>
+      <h3 class="cta-title">DESEJA MAIS<br>INFORMAÇÕES?</h3>
+      <p class="cta-text">Fale direto com nossa equipe de vendas<br>ou entre na nossa comunidade.</p>
+      <a href="https://chat.whatsapp.com/D1POPuDCLEm2hJSrP2LtKJ" class="btn whatsapp-btn" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i>&nbsp; COMUNIDADE WHATSAPP
+      </a>
+      <p class="cta-time">&gt; SEG–SEX, 08:00–18:00_</p>
     </div>
-  </section>
+  </div>
+</section>
 </main>
 
-<!-- FOOTER -->
 <footer>
   <div class="container footer-content">
     <div>
-      <span style="font-weight: 600; color: white;">PHANTOM</span><br>
-      <span>© 2026 Spectro Productions. Todos os direitos reservados.</span>
+      <div class="footer-brand">PHANTOM</div>
+      <div class="footer-copy">© 2026 SPECTRO PRODUCTIONS. TODOS OS DIREITOS RESERVADOS.</div>
     </div>
     <div class="social-icons">
-      <a href="https://x.com/spectroprodtail" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
-      <a href="https://chat.whatsapp.com/D1POPuDCLEm2hJSrP2LtKJ" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://x.com/spectroprodtail"><i class="fab fa-twitter"></i></a>
+      <a href="https://chat.whatsapp.com/D1POPuDCLEm2hJSrP2LtKJ"><i class="fab fa-whatsapp"></i></a>
     </div>
   </div>
 </footer>
 
-<!-- MODAL DE PRÉ-CONTATO -->
+<!-- MODAL -->
 <div class="modal-overlay" id="contactModal">
   <div class="modal-card">
     <div class="modal-header">
-      <h3>Solicitar informações</h3>
+      <h3>SOLICITAR INFO</h3>
       <button class="modal-close" id="closeModalBtn">&times;</button>
     </div>
     <div class="modal-body">
       <form id="preContactForm">
         <div class="form-group">
-          <label>Console de interesse</label>
+          <label>CONSOLE DE INTERESSE</label>
           <input type="text" id="selectedModelInput" readonly class="readonly-input">
         </div>
         <div class="form-group">
-          <label for="clientName">Nome completo <span>*</span></label>
+          <label for="clientName">NOME COMPLETO <span>*</span></label>
           <input type="text" id="clientName" placeholder="Ex: João Silva" required>
         </div>
         <div class="form-group">
@@ -864,199 +701,143 @@
           <input type="text" id="clientCPF" placeholder="000.000.000-00" required>
         </div>
         <div class="form-group">
-          <label for="clientMessage">Mensagem (opcional)</label>
-          <textarea id="clientMessage" rows="3" placeholder="Escreva sua dúvida ou observação..."></textarea>
+          <label for="clientMessage">MENSAGEM (OPCIONAL)</label>
+          <textarea id="clientMessage" rows="3" placeholder="Escreva sua dúvida..."></textarea>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancelar</button>
-          <button type="submit" class="btn whatsapp-btn"><i class="fab fa-whatsapp"></i> Enviar para WhatsApp</button>
+          <button type="button" class="btn btn-outline" id="cancelModalBtn">CANCELAR</button>
+          <button type="submit" class="btn whatsapp-btn"><i class="fab fa-whatsapp"></i>&nbsp; WHATSAPP</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<!-- SCRIPTS -->
-<!-- Model Viewer Library -->
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-
 <script>
-  (function() {
-    "use strict";
-
-    // ----- MENU MOBILE E SCROLL SUAVE -----
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    if (menuToggle) {
-      menuToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        const icon = menuToggle.querySelector('i');
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-times');
-      });
+(function(){
+"use strict";
+const menuToggle=document.getElementById('menu-toggle');
+const navMenu=document.getElementById('nav-menu');
+if(menuToggle){
+  menuToggle.addEventListener('click',()=>{
+    navMenu.classList.toggle('active');
+    const icon=menuToggle.querySelector('i');
+    icon.classList.toggle('fa-bars');
+    icon.classList.toggle('fa-times');
+  });
+}
+const navLinks=document.querySelectorAll('.nav-menu a');
+navLinks.forEach(link=>{
+  link.addEventListener('click',(e)=>{
+    if(window.innerWidth<=900){
+      navMenu.classList.remove('active');
+      const icon=menuToggle.querySelector('i');
+      icon.classList.add('fa-bars');
+      icon.classList.remove('fa-times');
     }
-
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        if (window.innerWidth <= 900) {
-          navMenu.classList.remove('active');
-          const icon = menuToggle.querySelector('i');
-          icon.classList.add('fa-bars');
-          icon.classList.remove('fa-times');
-        }
-        
-        const href = link.getAttribute('href');
-        if (href && href.startsWith('#')) {
-          e.preventDefault();
-          const targetId = href.substring(1);
-          const targetElement = document.getElementById(targetId);
-          if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-        
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-      });
-    });
-
-    // Scroll spy
-    const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      const scrollPos = window.scrollY + 150;
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-          current = section.getAttribute('id');
-        }
-      });
-      
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        const href = link.getAttribute('href');
-        if (href && href.substring(1) === current) {
-          link.classList.add('active');
-        }
-      });
-      if (window.scrollY < 100) {
-        navLinks.forEach(l => l.classList.remove('active'));
-        document.querySelector('.nav-menu a[href="#home"]')?.classList.add('active');
-      }
-    });
-
-    // ----- MODEL VIEWER -----
-    const modelViewerContainer = document.getElementById('modelViewerContainer');
-    if (modelViewerContainer) {
-      const modelViewer = document.createElement('model-viewer');
-      // Usando um modelo de exemplo GRATUITO da Google para TESTE
-      // Substitua pelo seu arquivo .glb quando estiver pronto
-      modelViewer.setAttribute('src', 'phantom_chrome.glb');
-      modelViewer.setAttribute('alt', 'Modelo 3D interativo do Console Phantom');
-      modelViewer.setAttribute('auto-rotate', '');
-      modelViewer.setAttribute('camera-controls', '');
-      modelViewer.setAttribute('ar', '');
-      modelViewer.setAttribute('shadow-intensity', '1');
-      modelViewer.setAttribute('camera-orbit', '0deg 75deg 105%');
-      modelViewer.style.width = '100%';
-      modelViewer.style.height = '100%';
-      modelViewer.style.minHeight = '400px';
-      modelViewer.style.borderRadius = '20px';
-      modelViewerContainer.appendChild(modelViewer);
-    }
-
-    // ----- MODAL E FORMULÁRIO WHATSAPP -----
-    const modal = document.getElementById('contactModal');
-    const closeBtn = document.getElementById('closeModalBtn');
-    const cancelBtn = document.getElementById('cancelModalBtn');
-    const form = document.getElementById('preContactForm');
-    const selectedModelInput = document.getElementById('selectedModelInput');
-    const clientName = document.getElementById('clientName');
-    const clientCPF = document.getElementById('clientCPF');
-    const clientMessage = document.getElementById('clientMessage');
-    
-    let currentModel = 'Phantom';
-
-    function openModal(modelName) {
-      currentModel = modelName;
-      selectedModelInput.value = modelName;
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      modal.style.display = 'none';
-      document.body.style.overflow = '';
-      form.reset();
-    }
-
-    closeBtn.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Máscara de CPF
-    clientCPF.addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.length > 11) value = value.slice(0,11);
-      value = value.replace(/(\d{3})(\d)/, '$1.$2');
-      value = value.replace(/(\d{3})(\d)/, '$1.$2');
-      value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-      e.target.value = value;
-    });
-
-    // Botões "Comprar"
-    const buyButtons = document.querySelectorAll('.model-actions .btn-comprar:not(.disabled)');
-    buyButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const card = btn.closest('.model-card');
-        const model = card ? card.querySelector('.model-name')?.innerText : 'Phantom';
-        openModal(model);
-      });
-    });
-
-    // Envio do formulário
-    form.addEventListener('submit', (e) => {
+    const href=link.getAttribute('href');
+    if(href&&href.startsWith('#')){
       e.preventDefault();
-      
-      const name = clientName.value.trim();
-      const cpf = clientCPF.value.trim();
-      const message = clientMessage.value.trim();
-      
-      if (!name || !cpf) {
-        alert('Por favor, preencha Nome e CPF.');
-        return;
-      }
-
-      const phone = '5582991194273';
-      const texto = 
-        `Olá! Tenho interesse no *${currentModel}*.%0A%0A` +
-        `📌 *Nome:* ${encodeURIComponent(name)}%0A` +
-        `📌 *CPF:* ${encodeURIComponent(cpf)}%0A` +
-        (message ? `📌 *Mensagem:* ${encodeURIComponent(message)}%0A%0A` : '%0A') +
-        `Aguardo retorno. Obrigado!`;
-      
-      window.open(`https://wa.me/${phone}?text=${texto}`, '_blank');
-      closeModal();
-    });
-
-    // Botões "Detalhes"
-    const detailBtns = document.querySelectorAll('.model-actions .btn-outline');
-    detailBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        if (btn.getAttribute('href') === '#') {
-          e.preventDefault();
-          const modelName = btn.closest('.model-content')?.querySelector('.model-name')?.innerText || 'Phantom';
-          alert(`✨ ${modelName} — especificações completas disponíveis em breve. Fique ligado!`);
-        }
-      });
-    });
-
-  })();
+      const el=document.getElementById(href.substring(1));
+      if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    navLinks.forEach(l=>l.classList.remove('active'));
+    link.classList.add('active');
+  });
+});
+const sections=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+  let current='';
+  const scrollPos=window.scrollY+150;
+  sections.forEach(s=>{
+    if(scrollPos>=s.offsetTop&&scrollPos<s.offsetTop+s.offsetHeight)current=s.getAttribute('id');
+  });
+  navLinks.forEach(l=>{
+    l.classList.remove('active');
+    const href=l.getAttribute('href');
+    if(href&&href.substring(1)===current)l.classList.add('active');
+  });
+  if(window.scrollY<100){
+    navLinks.forEach(l=>l.classList.remove('active'));
+    document.querySelector('.nav-menu a[href="#home"]')?.classList.add('active');
+  }
+});
+const modelViewerContainer=document.getElementById('modelViewerContainer');
+if(modelViewerContainer){
+  const mv=document.createElement('model-viewer');
+  mv.setAttribute('src','phantom_chrome.glb');
+  mv.setAttribute('alt','Modelo 3D do Console Phantom');
+  mv.setAttribute('auto-rotate','');
+  mv.setAttribute('camera-controls','');
+  mv.setAttribute('ar','');
+  mv.setAttribute('shadow-intensity','1');
+  mv.setAttribute('camera-orbit','0deg 75deg 105%');
+  mv.style.width='100%';
+  mv.style.height='100%';
+  mv.style.minHeight='400px';
+  modelViewerContainer.appendChild(mv);
+}
+const modal=document.getElementById('contactModal');
+const closeBtn=document.getElementById('closeModalBtn');
+const cancelBtn=document.getElementById('cancelModalBtn');
+const form=document.getElementById('preContactForm');
+const selectedModelInput=document.getElementById('selectedModelInput');
+const clientName=document.getElementById('clientName');
+const clientCPF=document.getElementById('clientCPF');
+const clientMessage=document.getElementById('clientMessage');
+let currentModel='Phantom';
+function openModal(modelName){
+  currentModel=modelName;
+  selectedModelInput.value=modelName;
+  modal.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  modal.style.display='none';
+  document.body.style.overflow='';
+  form.reset();
+}
+closeBtn.addEventListener('click',closeModal);
+cancelBtn.addEventListener('click',closeModal);
+modal.addEventListener('click',(e)=>{if(e.target===modal)closeModal();});
+clientCPF.addEventListener('input',function(e){
+  let v=e.target.value.replace(/\D/g,'');
+  if(v.length>11)v=v.slice(0,11);
+  v=v.replace(/(\d{3})(\d)/,'$1.$2');
+  v=v.replace(/(\d{3})(\d)/,'$1.$2');
+  v=v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  e.target.value=v;
+});
+document.querySelectorAll('.model-actions .btn-comprar').forEach(btn=>{
+  btn.addEventListener('click',(e)=>{
+    e.preventDefault();
+    const card=btn.closest('.model-card');
+    const model=card?card.querySelector('.model-name')?.innerText:'Phantom';
+    openModal(model);
+  });
+});
+form.addEventListener('submit',(e)=>{
+  e.preventDefault();
+  const name=clientName.value.trim();
+  const cpf=clientCPF.value.trim();
+  const message=clientMessage.value.trim();
+  if(!name||!cpf){alert('Preencha Nome e CPF.');return;}
+  const phone='5582991194273';
+  const texto=`Olá! Tenho interesse no *${currentModel}*.%0A%0A📌 *Nome:* ${encodeURIComponent(name)}%0A📌 *CPF:* ${encodeURIComponent(cpf)}%0A`+(message?`📌 *Mensagem:* ${encodeURIComponent(message)}%0A%0A`:'%0A')+'Aguardo retorno. Obrigado!';
+  window.open(`https://wa.me/${phone}?text=${texto}`,'_blank');
+  closeModal();
+});
+document.querySelectorAll('.model-actions .btn-outline').forEach(btn=>{
+  btn.addEventListener('click',(e)=>{
+    if(btn.getAttribute('href')==='#'){
+      e.preventDefault();
+      const modelName=btn.closest('.model-content')?.querySelector('.model-name')?.innerText||'Phantom';
+      alert(`✨ ${modelName} — especificações completas em breve!`);
+    }
+  });
+});
+})();
 </script>
 </body>
 </html>
